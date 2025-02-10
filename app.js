@@ -43,11 +43,16 @@ app.get('/',
     res.render('index')
 })
 
-app.use((req,res,next)=>{
-    console.log("this is middleware");
-    res.send(" inside middleware")
+app.use(express.json())                 //start
+app.use(express.urlencoded({extended:true}))  // built in middleware
+app.use(express.static("public"))
+
+
+// app.use((req,res,next)=>{
+//     console.log("this is middleware");
+//     res.send(" inside middleware")
     
-})
+// })
 
 app.get('/', (req,res) =>
 {
@@ -57,10 +62,17 @@ app.get('/about',(req,res)=>{
     res.send("about page")
 })
 
-app.get('/get-form-data',(req,res)=>{
-    console.log(req.query);
+// app.get('/get-form-data',(req,res)=>{
+//     console.log(req.query);          //inthis data are shows in url and work for server to frontend
+//     res.send('data recieved')
+    
+// })
+
+app.post('/get-form-data',(req,res)=>{
+    console.log(req.body);              //dont show data in url and work for frontend to backend
     res.send('data recieved')
     
 })
+
 
 app.listen(3000)
