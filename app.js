@@ -24,6 +24,9 @@ const express = require('express');
 const morgan = require('morgan')
 const app = express()
 
+const userModel = require('./models/user')
+const dbConnection = require('./config/db')
+
 app.use(morgan('dev'))
 
 app.set("view engine",'ejs')
@@ -61,6 +64,21 @@ app.get('/', (req,res) =>
 app.get('/about',(req,res)=>{
     res.send("about page")
 })
+app.get('/register',(req,res)=>{
+    res.render("register")
+})
+
+app.post('/register',async(req,res)=>{
+    const{username, email, password}= req.body
+
+    await userModel.create({
+        username : username,
+        email : email,
+        password : password
+    })
+    res.send("data recieved")
+    
+}),
 
 // app.get('/get-form-data',(req,res)=>{
 //     console.log(req.query);          //inthis data are shows in url and work for server to frontend
@@ -68,11 +86,50 @@ app.get('/about',(req,res)=>{
     
 // })
 
+ app.get('/get-users',(req , res) =>
+ {
+//     userModel.find().then((users)=>{
+//         res.send(users)        // this method is used to read the data from database
+//     })
+
+////////////another method//////////////////////
+
+userModel.findOne({
+    username: 'a'
+}).then((user)=>{
+res.send(user)
+})
+ })
+
+
+ //////////////////////update///////////////////
+
+ app.get('/update-user',async(req,res)=>{
+   await userModel.findOneAndUpdate({
+        username :'a'
+    },{
+        email: "c@1323"
+    })
+    res.send("user updated")
+ })
+
+
+ ///////////////////////DELETE OPERATION///////////////////
+
+ app.get('/delete-user',async(req,res)=>{
+          await userModel.findOneAndDelete({
+            username : "a"
+          })
+          res.send("user deleted")
+ })
+
 app.post('/get-form-data',(req,res)=>{
     console.log(req.body);              //dont show data in url and work for frontend to backend
     res.send('data recieved')
     
 })
+
+
 
 
 app.listen(3000)
